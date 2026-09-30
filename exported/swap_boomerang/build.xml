@@ -1,0 +1,5 @@
+<Build name="swap_completelyregularattack.scml">
+ <Symbol name="swap_boomerang">
+  <Frame framenum="0" duration="10" image="swap_boomerang-0" w="120" h="132" x="34.250519" y="-20.774555"/>
+ </Symbol>
+</Build>

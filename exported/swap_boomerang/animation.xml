@@ -1,0 +1,19 @@
+<Anims>
+ <anim name="BUILD" root="swap_completelyregularattack" numframes="125" framerate="40">
+  <frame idx="0" w="144" h="229" x="23.250519" y="-41.274555">
+   <element name="swap_boomerang" layername="timeline_0" frame="0" z_index="1" m_a="1.000000" m_b="0.000000" m_c="0.000000" m_d="1.000000" m_tx="1.000000" m_ty="-1.000000"/>
+  </frame>
+  <frame idx="25" w="144" h="229" x="23.250519" y="-41.274555">
+   <element name="swap_boomerang" layername="timeline_0" frame="0" z_index="1" m_a="1.000000" m_b="0.000000" m_c="0.000000" m_d="1.000000" m_tx="1.000000" m_ty="-1.000000"/>
+  </frame>
+  <frame idx="50" w="144" h="229" x="23.250519" y="-41.274555">
+   <element name="swap_boomerang" layername="timeline_0" frame="0" z_index="1" m_a="1.000000" m_b="0.000000" m_c="0.000000" m_d="1.000000" m_tx="1.000000" m_ty="-1.000000"/>
+  </frame>
+  <frame idx="75" w="144" h="229" x="23.250519" y="-41.274555">
+   <element name="swap_boomerang" layername="timeline_0" frame="0" z_index="1" m_a="1.000000" m_b="0.000000" m_c="0.000000" m_d="1.000000" m_tx="1.000000" m_ty="-1.000000"/>
+  </frame>
+  <frame idx="100" w="144" h="229" x="23.250519" y="-41.274555">
+   <element name="swap_boomerang" layername="timeline_0" frame="0" z_index="1" m_a="1.000000" m_b="0.000000" m_c="0.000000" m_d="1.000000" m_tx="1.000000" m_ty="-1.000000"/>
+  </frame>
+ </anim>
+</Anims>
