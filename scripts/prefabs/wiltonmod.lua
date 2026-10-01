@@ -173,10 +173,36 @@ local function reviveAnimation(inst)
 	
 		inst.sg:GoToState("wilton_rebirth")
 	else -- if reviving from portal, set 70% hp penalty. spawn hp: 30
-		inst.components.health:SetPenalty(0.70)
+		local penalty = 0.70
+		if inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wilton_resurrection_2") then
+			penalty = 0.0
+		elseif inst.components.skilltreeupdater and inst.components.skilltreeupdater:IsActivated("wilton_resurrection_1") then
+			penalty = 0.25
+		end
+		inst.components.health:SetPenalty(penalty)
 		inst.components.health:DoDelta(0)
 		inst.components.health:SetCurrentHealth(inst.components.health:GetMaxWithPenalty())
 		inst.components.health:DoDelta(0)
+	end
+end
+
+local function UpdateSkillModifiers(inst)
+	if not inst.components.skilltreeupdater then
+		return
+	end
+
+	if inst.components.skilltreeupdater:IsActivated("wilton_food_recycling_2") then
+		inst.components.sanity:SetMax(100)
+		inst.components.sanity.night_drain_mult = 0
+	else
+		inst.components.sanity:SetMax(85)
+		inst.components.sanity.night_drain_mult = 0.5
+	end
+
+	if inst.components.skilltreeupdater:IsActivated("wilton_bonepaste_2") then
+		inst:AddTag("fasthealer")
+	else
+		inst:RemoveTag("fasthealer")
 	end
 end
 
@@ -241,6 +267,21 @@ local master_postinit = function(inst)
 	inst.components.sanity:SetMax(85)
 	-- sets damage multiplier based on current health. starting: 0.5 multiplier
 	recalculateDamageMultiplier(inst)
+	inst.recalculateDamageMultiplier = recalculateDamageMultiplier
+	UpdateSkillModifiers(inst)
+	inst.UpdateSkillModifiers = UpdateSkillModifiers
+	inst:ListenForEvent("onactivateskill_server", function(inst)
+		recalculateDamageMultiplier(inst)
+		UpdateSkillModifiers(inst)
+	end)
+	inst:ListenForEvent("ondeactivateskill_server", function(inst)
+		recalculateDamageMultiplier(inst)
+		UpdateSkillModifiers(inst)
+	end)
+
+	if inst.components.skilltreeupdater and inst.components.skilltreeupdater:GetSkillXP() == 0 then
+		inst.components.skilltreeupdater:AddSkillXP(15)
+	end
 	-- is less afraid of night
 	inst.components.sanity.night_drain_mult = 0.5
 	-- resistant to temperature change

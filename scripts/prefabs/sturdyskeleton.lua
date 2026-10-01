@@ -120,8 +120,13 @@ end
 
 local function onhaunt(inst, haunter)
 	if haunter.prefab == "wiltonmod" then
-		-- if skeleton revive was used, set penalty to 50% hp. usable hp: 50
-		haunter.components.health:SetPenalty(0.50)
+		local penalty = 0.50
+		if haunter.components.skilltreeupdater and haunter.components.skilltreeupdater:IsActivated("wilton_resurrection_2") then
+			penalty = 0.0
+		elseif haunter.components.skilltreeupdater and haunter.components.skilltreeupdater:IsActivated("wilton_resurrection_1") then
+			penalty = 0.25
+		end
+		haunter.components.health:SetPenalty(penalty)
 		haunter.components.health:DoDelta(0)
 		haunter.Transform:SetPosition(inst.Transform:GetWorldPosition())
 		haunter:PushEvent("respawnfromghost", { source = inst })

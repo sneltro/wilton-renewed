@@ -557,8 +557,13 @@ local function possessSkeleton(inst)
 			if inst.char and inst.char == "wiltonmod" then
 				return false
 			else
-				-- if skeleton revive was used, set penalty to 50% hp. usable hp: 50
-				haunter.components.health:SetPenalty(0.50)
+				local penalty = 0.50
+				if haunter.components.skilltreeupdater and haunter.components.skilltreeupdater:IsActivated("wilton_resurrection_2") then
+					penalty = 0.0
+				elseif haunter.components.skilltreeupdater and haunter.components.skilltreeupdater:IsActivated("wilton_resurrection_1") then
+					penalty = 0.25
+				end
+				haunter.components.health:SetPenalty(penalty)
 				haunter.components.health:DoDelta(0)
 				haunter.Transform:SetPosition(inst.Transform:GetWorldPosition())
 				haunter:PushEvent("respawnfromghost", { source = inst })
@@ -702,6 +707,12 @@ local function eatWilton(self)
                 food:Remove()
             end
             
+            if self.inst.components.skilltreeupdater and self.inst.components.skilltreeupdater:IsActivated("wilton_food_recycling_2") then
+                self.inst.components.sanity:DoDelta(5)
+            elseif self.inst.components.skilltreeupdater and self.inst.components.skilltreeupdater:IsActivated("wilton_food_recycling_1") then
+                self.inst.components.sanity:DoDelta(3)
+            end
+
             self.lasteattime = GLOBAL.GetTime()
             
             return true
@@ -780,10 +791,19 @@ local function maxhealerWilton (self, target)
 	self.Heal = function (self, target)
 		if not target:HasTag("playerghost") and self.inst.prefab == "bonepaste" then
 			if target.components.health and (target.components.health.penalty > 0 or target.components.health.currenthealth < target.components.health.maxhealth) then
-				target.components.health.penalty = math.clamp((target.components.health.penalty + -0.20), 0, 1.00) --heals 20%
-				target.components.health:DoDelta(20)
+				local penalty_heal = -0.20
+				local hp_delta = 20
+				if target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_bonepaste_2") then
+					penalty_heal = -0.30
+					hp_delta = 30
+				elseif target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_bonepaste_1") then
+					penalty_heal = -0.25
+					hp_delta = 25
+				end
+
+				target.components.health.penalty = math.clamp((target.components.health.penalty + penalty_heal), 0, 1.00)
+				target.components.health:DoDelta(hp_delta)
 				target.components.health:ForceUpdateHUD()
-				
 				
 				if self.inst.components.stackable and self.inst.components.stackable.stacksize > 1 then
 					self.inst.components.stackable:Get():Remove()
@@ -794,8 +814,17 @@ local function maxhealerWilton (self, target)
 			end
 		elseif not target:HasTag("playerghost") and self.inst.prefab == "rockygoop" then
 			if target.components.health and (target.components.health.penalty > 0 or target.components.health.currenthealth < target.components.health.maxhealth) then
-				target.components.health.penalty = math.clamp((target.components.health.penalty + -0.03), 0, 1.00) -- heals 3%
-				target.components.health:DoDelta(5)
+				local penalty_heal = 0
+				local hp_delta = 5
+				if target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_rocky_goop_1") then
+					hp_delta = 7
+				end
+				if target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_rocky_goop_2") then
+					penalty_heal = -0.03
+				end
+
+				target.components.health.penalty = math.clamp((target.components.health.penalty + penalty_heal), 0, 1.00)
+				target.components.health:DoDelta(hp_delta)
 				target.components.health:ForceUpdateHUD()
 				
 				if self.inst.components.stackable and self.inst.components.stackable.stacksize > 1 then
@@ -817,7 +846,42 @@ end
 AddComponentPostInit("maxhealer", maxhealerWilton)
 
 -- Skilltree
---[[ local SkillTreeDefs = require("prefabs/skilltree_defs")
+STRINGS.SKILLTREE = STRINGS.SKILLTREE or {}
+STRINGS.SKILLTREE.PANELS = STRINGS.SKILLTREE.PANELS or {}
+STRINGS.SKILLTREE.PANELS.BONERANG = "BONERANG"
+STRINGS.SKILLTREE.PANELS.CONSUMPTION = "CONSUMPTION"
+STRINGS.SKILLTREE.PANELS.RESURRECTION = "RESURRECTION"
+
+STRINGS.SKILLTREE.WILTON = {
+	BONERANG_DURABILITY_TITLE = "Durable Bonerang",
+	BONERANG_DURABILITY_DESC = "Bonerang lasts 50% longer.",
+	BONERANG_DAMAGE_TITLE = "Heavy Bonerang",
+	BONERANG_DAMAGE_DESC = "Bonerang deals 50% more damage.",
+	BONERANG_SAFECATCH_TITLE = "Cushioned Catch",
+	BONERANG_SAFECATCH_DESC = "Bonerang won't deal damage on an unsuccessful catch.",
+
+	FOOD_RECYCLING_1_TITLE = "Mental Stability I",
+	FOOD_RECYCLING_1_DESC = "Food gives +3 sanity when recycled.",
+	FOOD_RECYCLING_2_TITLE = "Mental Stability II",
+	FOOD_RECYCLING_2_DESC = "Food gives +5 sanity when recycled. Max sanity is increased to 100. Night doesn't scare you anymore at all.",
+
+	ROCKY_GOOP_1_TITLE = "Dense Goop",
+	ROCKY_GOOP_1_DESC = "Rocky goop gives more health when used (5 -> 7).",
+	ROCKY_GOOP_2_TITLE = "Mineral Restoration",
+	ROCKY_GOOP_2_DESC = "Rocky goop also gives max health when used (0 -> 3).",
+
+	BONEPASTE_1_TITLE = "Thick Bone Paste",
+	BONEPASTE_1_DESC = "Bonepaste gives 25% more health and max health.",
+	BONEPASTE_2_TITLE = "Super Bone Glue",
+	BONEPASTE_2_DESC = "Bonepaste gives 50% more health and max health and is consumed faster.",
+
+	RESURRECTION_1_TITLE = "Solid Reassembly",
+	RESURRECTION_1_DESC = "You resurrect with 75% of max health.",
+	RESURRECTION_2_TITLE = "Pristine Rebirth",
+	RESURRECTION_2_DESC = "You resurrect with 100% of max health and sanity.",
+}
+
+local SkillTreeDefs = require("prefabs/skilltree_defs")
 local BuildSkillsData = require("prefabs/skilltree_wilton")
 
 local function CreateSkillTree()
@@ -827,12 +891,14 @@ local function CreateSkillTree()
         if data then
             SkillTreeDefs.CreateSkillTreeFor("wiltonmod", data.SKILLS)
             SkillTreeDefs.SKILLTREE_ORDERS["wiltonmod"] = data.ORDERS
-            --print("created skilltree")
         end
     end
-end ]]
+end
+CreateSkillTree()
 
-
+if GLOBAL.TheSkillTree and GLOBAL.TheSkillTree.GetSkillXP and GLOBAL.TheSkillTree:GetSkillXP("wiltonmod") == 0 then
+    GLOBAL.TheSkillTree:AddSkillXP(15, "wiltonmod")
+end
 -- Skilltree end
 
 

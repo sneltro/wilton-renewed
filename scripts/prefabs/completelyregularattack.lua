@@ -16,15 +16,32 @@ local function OnEquip(inst, owner)
     owner.AnimState:OverrideSymbol("swap_object", "swap_completelyregularattack", "swap_boomerang")
     owner.AnimState:Show("ARM_carry") 
     owner.AnimState:Hide("ARM_normal") 
+
+    if owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated("wilton_bonerang_durability") then
+        inst.components.weapon.attackwearmultipliers:SetModifier(inst, 1 / 1.5, "wilton_bonerang_durability")
+    else
+        inst.components.weapon.attackwearmultipliers:RemoveModifier(inst, "wilton_bonerang_durability")
+    end
+
+    if owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated("wilton_bonerang_damage") then
+        inst.components.weapon:SetDamage(34 * 1.5)
+    else
+        inst.components.weapon:SetDamage(34)
+    end
 end
 
 local function OnDropped(inst)
+    if inst.components.finiteuses ~= nil and inst.components.finiteuses:GetUses() <= 0 then
+        return
+    end
     inst.AnimState:PlayAnimation("idle")
 end
 
 local function OnUnequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
+    inst.components.weapon.attackwearmultipliers:RemoveModifier(inst, "wilton_bonerang_durability")
+    inst.components.weapon:SetDamage(34)
 end
 
 local function OnThrown(inst, owner, target)
@@ -53,12 +70,12 @@ local function ReturnToOwner(inst, owner)
 end
 
 local function OnHit(inst, owner, target)
-    if owner == target or owner:HasTag("playerghost") then
+    if owner == nil or owner == target or owner:HasTag("playerghost") then
         OnDropped(inst)
     else
         ReturnToOwner(inst, owner)
     end
-    if target ~= nil and target:IsValid() then
+    if target ~= nil and target:IsValid() and target.components.combat then
         local impactfx = SpawnPrefab("impact")
         if impactfx ~= nil then
             local follower = impactfx.entity:AddFollower()
@@ -69,7 +86,7 @@ local function OnHit(inst, owner, target)
 end
 
 local function OnMiss(inst, owner, target)
-    if owner == target then
+    if owner == nil or owner == target then
         OnDropped(inst)
     else
         ReturnToOwner(inst, owner)
@@ -135,7 +152,28 @@ local function fn()
     inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
 
-		--setAutoCatch(inst)
+    local old_hit = inst.components.projectile.Hit
+    inst.components.projectile.Hit = function(self, target)
+        local attacker = self.owner
+        if target == attacker and target ~= nil and target:HasTag("wiltonmod") and target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_bonerang_safecatch") then
+            self:Stop()
+            self.inst.Physics:Stop()
+
+            if self.inst.components.finiteuses ~= nil then
+                local uses = 1
+                if self.inst.components.weapon ~= nil then
+                    uses = (self.inst.components.weapon.attackwear or 1) * self.inst.components.weapon.attackwearmultipliers:Get()
+                end
+                self.inst.components.finiteuses:Use(uses)
+            end
+
+            if self.onhit ~= nil then
+                self.onhit(self.inst, attacker, target)
+            end
+            return
+        end
+        return old_hit(self, target)
+    end
 
     inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/completelyregularattack.xml"

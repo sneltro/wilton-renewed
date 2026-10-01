@@ -1,43 +1,173 @@
---[[ local ORDERS =
+local TITLE_Y_OFFSET = 30
+local Y_TOP = 160
+
+local ORDERS =
 {
-    {"bonerang",           { -214+19   , 176 + 20 }}, --was +30
-    {"nercomancy",         { -62+5       , 176 + 30 }},
-    {"consumption",           { 66+19     , 176 + 30 }},
-    {"allegiance",      { 190       , 176 + 30 }},
+    {"bonerang",     { -170, Y_TOP + TITLE_Y_OFFSET }},
+    {"consumption",  {    0, Y_TOP + TITLE_Y_OFFSET }},
+    {"resurrection", {  170, Y_TOP + TITLE_Y_OFFSET }},
 }
-
-
-local H_GAP = 38
-local W_GAP = 38
-local H_GAP_SMALL = 30
-local W_GAP_SMALL = 30
-local H_GAP_LARGE = 48
-local W_GAP_LARGE = 48
-
-local STORAGEORIGIN_W = -214
-local STORAGEORIGIN_H = 160 --was 176
-local TAPEORIGIN_W = -56
-local STATORIGIN_W = 65.5 --was 66
-local AFFINITYORIGIN_W = 190
 
 local function BuildSkillsData(SkillTreeFns)
-    local function MakeCleanFreakLock1(pos, connects, opentag)
-        return {
-            desc = "Increases the damage of your bonerang by 50%",
-            {TAPEORIGIN_W,176-H_GAP_SMALL*4},
+    local skills =
+    {
+        -----------------------------------------------------------------------
+        -- BONERANG
+        -----------------------------------------------------------------------
+        wilton_bonerang_durability = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DURABILITY_TITLE) or "Durable Bonerang",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DURABILITY_DESC) or "Bonerang lasts 50% longer.",
+            icon = "wx78_reduce_break",
+            pos = { -170, Y_TOP },
             group = "bonerang",
+            tags = { "bonerang" },
             root = true,
-            
-            connects = connects,
-        }
-    end
+            defaultfocus = true,
+            connects = {
+                "wilton_bonerang_damage",
+            },
+        },
+        wilton_bonerang_damage = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_TITLE) or "Heavy Bonerang",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_DESC) or "Bonerang deals 50% more damage.",
+            icon = "wathgrithr_arsenal_spear_1",
+            pos = { -170, Y_TOP - 50 },
+            group = "bonerang",
+            tags = { "bonerang" },
+            connects = {
+                "wilton_bonerang_safecatch",
+            },
+        },
+        wilton_bonerang_safecatch = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_SAFECATCH_TITLE) or "Cushioned Catch",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_SAFECATCH_DESC) or "Bonerang won't deal damage on an unsuccessful catch.",
+            icon = "wathgrithr_arsenal_shield_1",
+            pos = { -170, Y_TOP - 100 },
+            group = "bonerang",
+            tags = { "bonerang" },
+        },
 
-local skills = {}
+        -----------------------------------------------------------------------
+        -- CONSUMPTION: Food Recycling
+        -----------------------------------------------------------------------
+        wilton_food_recycling_1 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_1_TITLE) or "Mental Stability I",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_1_DESC) or "Food gives +3 sanity when recycled.",
+            icon = "wormwood_moon_cap_eating",
+            pos = { -50, Y_TOP },
+            group = "consumption",
+            tags = { "consumption", "recycling" },
+            root = true,
+            connects = {
+                "wilton_food_recycling_2",
+            },
+        },
+        wilton_food_recycling_2 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_2_TITLE) or "Mental Stability II",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_2_DESC) or "Food gives +5 sanity when recycled. Max sanity is increased to 100. Night doesn't scare you anymore at all.",
+            icon = "wurt_amphibian_sanity_1",
+            pos = { -50, Y_TOP - 50 },
+            group = "consumption",
+            tags = { "consumption", "recycling" },
+            onactivate = function(inst, fromload)
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end,
+            ondeactivate = function(inst, fromload)
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end,
+        },
 
-return {
-    SKILLS = skills,
-    ORDERS = ORDERS,
-}
+        -----------------------------------------------------------------------
+        -- CONSUMPTION: Rocky Goop
+        -----------------------------------------------------------------------
+        wilton_rocky_goop_1 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_1_TITLE) or "Dense Goop",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_1_DESC) or "Rocky goop gives more health when used (5 -> 7).",
+            icon = "wilson_alchemy_iky_1",
+            pos = { 0, Y_TOP },
+            group = "consumption",
+            tags = { "consumption", "rockygoop" },
+            root = true,
+            connects = {
+                "wilton_rocky_goop_2",
+            },
+        },
+        wilton_rocky_goop_2 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_2_TITLE) or "Mineral Restoration",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_2_DESC) or "Rocky goop also gives max health when used (0 -> 3).",
+            icon = "wilson_alchemy_iky_2",
+            pos = { 0, Y_TOP - 50 },
+            group = "consumption",
+            tags = { "consumption", "rockygoop" },
+        },
+
+        -----------------------------------------------------------------------
+        -- CONSUMPTION: Bonepaste
+        -----------------------------------------------------------------------
+        wilton_bonepaste_1 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_1_TITLE) or "Thick Bone Paste",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_1_DESC) or "Bonepaste gives 25% more health and max health.",
+            icon = "wilson_alchemy_iky_3",
+            pos = { 50, Y_TOP },
+            group = "consumption",
+            tags = { "consumption", "bonepaste" },
+            root = true,
+            connects = {
+                "wilton_bonepaste_2",
+            },
+        },
+        wilton_bonepaste_2 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_2_TITLE) or "Super Bone Glue",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_2_DESC) or "Bonepaste gives 50% more health and max health and is consumed faster.",
+            icon = "wurt_amphibian_healing_2",
+            pos = { 50, Y_TOP - 50 },
+            group = "consumption",
+            tags = { "consumption", "bonepaste" },
+            onactivate = function(inst, fromload)
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end,
+            ondeactivate = function(inst, fromload)
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end,
+        },
+
+        -----------------------------------------------------------------------
+        -- RESURRECTION
+        -----------------------------------------------------------------------
+        wilton_resurrection_1 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.RESURRECTION_1_TITLE) or "Solid Reassembly",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.RESURRECTION_1_DESC) or "You resurrect with 75% of max health.",
+            icon = "wx78_ghostrevive_1",
+            pos = { 170, Y_TOP },
+            group = "resurrection",
+            tags = { "resurrection" },
+            root = true,
+            connects = {
+                "wilton_resurrection_2",
+            },
+        },
+        wilton_resurrection_2 = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.RESURRECTION_2_TITLE) or "Pristine Rebirth",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.RESURRECTION_2_DESC) or "You resurrect with 100% of max health and sanity.",
+            icon = "wx78_ghostrevive_2",
+            pos = { 170, Y_TOP - 50 },
+            group = "resurrection",
+            tags = { "resurrection" },
+        },
+    }
+
+    return {
+        SKILLS = skills,
+        ORDERS = ORDERS,
+    }
 end
 
-return BuildSkillsData ]]
+return BuildSkillsData
