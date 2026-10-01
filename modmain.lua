@@ -54,6 +54,9 @@ Assets = {Asset("IMAGE", "images/saveslot_portraits/wiltonmod.tex"),
           Asset("ATLAS", "images/inventoryimages/completelyregularattack.xml"),
           Asset("IMAGE", "images/inventoryimages/completelyregularattack.tex"),
 
+          Asset("ATLAS", "images/inventoryimages/double_bonerang.xml"),
+          Asset("IMAGE", "images/inventoryimages/double_bonerang.tex"),
+
           Asset("ATLAS", "images/inventoryimages/rockygoop.xml"),
           Asset("IMAGE", "images/inventoryimages/rockygoop.tex"), Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
           Asset("SOUND", "sound/wiltonmod.fsb")}
@@ -93,6 +96,9 @@ TUNING.WILTONMOD_SANITY = 85
 RegisterInventoryItemAtlas("images/inventoryimages/bonepaste.xml", "images/inventoryimages/bonepaste.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/completelyregularattack.xml",
     "images/inventoryimages/completelyregularattack.tex")
+RegisterInventoryItemAtlas("images/inventoryimages/double_bonerang.xml", "double_bonerang.tex")
+RegisterInventoryItemAtlas("images/inventoryimages/double_bonerang.xml",
+    "images/inventoryimages/double_bonerang.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/rockygoop.xml", "images/inventoryimages/rockygoop.tex")
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.bonepaste = {
@@ -104,8 +110,8 @@ TUNING.STARTING_ITEM_IMAGE_OVERRIDE.completelyregularattack = {
     image = "images/inventoryimages/completelyregularattack.tex"
 }
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.double_bonerang = {
-    atlas = "images/inventoryimages/completelyregularattack.xml",
-    image = "images/inventoryimages/completelyregularattack.tex"
+    atlas = "images/inventoryimages/double_bonerang.xml",
+    image = "images/inventoryimages/double_bonerang.tex"
 }
 
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.WILTONMOD = {"boneshard", "bonepaste", "completelyregularattack"}
@@ -242,8 +248,8 @@ AddCharacterRecipe("double_bonerang", -- name
 { -- config
     product = "double_bonerang",
     builder_tag = "wilton_double_bonerang",
-    atlas = "images/inventoryimages/completelyregularattack.xml",
-    image = "completelyregularattack.tex",
+    atlas = "images/inventoryimages/double_bonerang.xml",
+    image = "double_bonerang.tex",
     numtogive = 1,
     nounlock = true,
     force_hint = true,

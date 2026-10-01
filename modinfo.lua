@@ -19,6 +19,7 @@ reign_of_giants_compatible = false
 
 -- character mods need this set to true
 all_clients_require_mod = true 
+forcemanifest = false
 
 icon_atlas = "modicon.xml"
 icon = "modicon.tex"

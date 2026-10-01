@@ -23,7 +23,7 @@ local prefabs = {
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE["bonepaste"] = {atlas = "images/inventoryimages/bonepaste.xml", image = "bonepaste.tex"}
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE["completelyregularattack"] = {atlas = "images/inventoryimages/completelyregularattack.xml", image = "completelyregularattack.tex"}
-TUNING.STARTING_ITEM_IMAGE_OVERRIDE["double_bonerang"] = {atlas = "images/inventoryimages/completelyregularattack.xml", image = "completelyregularattack.tex"}
+TUNING.STARTING_ITEM_IMAGE_OVERRIDE["double_bonerang"] = {atlas = "images/inventoryimages/double_bonerang.xml", image = "double_bonerang.tex"}
 
 
 ----------------------------OLD

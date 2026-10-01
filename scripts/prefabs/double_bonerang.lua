@@ -1,10 +1,10 @@
 local assets =
 {
-    Asset("ANIM", "anim/completelyregularattack.zip"),
-    Asset("ANIM", "anim/swap_completelyregularattack.zip"),
+    Asset("ANIM", "anim/double_bonerang.zip"),
+    Asset("ANIM", "anim/swap_double_bonerang.zip"),
 	
-	Asset("ATLAS", "images/inventoryimages/completelyregularattack.xml"),
-	Asset("IMAGE", "images/inventoryimages/completelyregularattack.tex"),
+	Asset("ATLAS", "images/inventoryimages/double_bonerang.xml"),
+	Asset("IMAGE", "images/inventoryimages/double_bonerang.tex"),
 }
 
 local function OnFinished(inst)
@@ -13,7 +13,7 @@ local function OnFinished(inst)
 end
 
 local function OnEquip(inst, owner) 
-    owner.AnimState:OverrideSymbol("swap_object", "swap_completelyregularattack", "swap_boomerang")
+    owner.AnimState:OverrideSymbol("swap_object", "swap_double_bonerang", "swap_boomerang")
     owner.AnimState:Show("ARM_carry") 
     owner.AnimState:Hide("ARM_normal") 
 end
@@ -100,7 +100,7 @@ local function fn()
     MakeInventoryPhysics(inst)
     RemovePhysicsColliders(inst)
     inst.AnimState:SetBank("boomerang")
-    inst.AnimState:SetBuild("completelyregularattack")
+    inst.AnimState:SetBuild("double_bonerang")
     inst.AnimState:PlayAnimation("idle")
     inst.AnimState:SetRayTestOnBB(true)
 
@@ -137,8 +137,7 @@ local function fn()
     setAutoCatch(inst)
 
     inst:AddComponent("inventoryitem")
-	inst.components.inventoryitem.atlasname = "images/inventoryimages/completelyregularattack.xml"
-	inst.components.inventoryitem.imagename = "completelyregularattack.tex"
+	inst.components.inventoryitem.atlasname = "images/inventoryimages/double_bonerang.xml"
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
 
     inst:AddComponent("equippable")

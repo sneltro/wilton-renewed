@@ -1,0 +1,12 @@
+<Build name="double_bonerang.scml">
+ <Symbol name="boomerang01">
+  <Frame framenum="0" duration="1" image="boomerang01_0" w="120" h="132" x="0.0" y="0.0"/>
+  <Frame framenum="1" duration="1" image="boomerang01_1" w="120" h="132" x="0.0" y="0.0"/>
+ </Symbol>
+ <Symbol name="broketool01">
+  <Frame framenum="1" duration="1" image="broketool01_1" w="56" h="80" x="1.9755" y="-2.2995"/>
+  <Frame framenum="2" duration="1" image="broketool01_2" w="72" h="56" x="2.9255" y="1.4005"/>
+  <Frame framenum="3" duration="1" image="broketool01_3" w="52" h="68" x="-1.8495" y="0.9255"/>
+  <Frame framenum="4" duration="1" image="broketool01_4" w="76" h="68" x="5.2005" y="1.7505"/>
+ </Symbol>
+</Build>
