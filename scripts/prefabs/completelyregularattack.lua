@@ -24,7 +24,7 @@ local function OnEquip(inst, owner)
     end
 
     if owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated("wilton_bonerang_damage") then
-        inst.components.weapon:SetDamage(34 * 1.5)
+        inst.components.weapon:SetDamage(45)
     else
         inst.components.weapon:SetDamage(34)
     end

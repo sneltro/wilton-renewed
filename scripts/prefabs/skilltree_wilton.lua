@@ -25,7 +25,7 @@ local function BuildSkillsData(SkillTreeFns)
         wilton_bonerang_damage = {
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_TITLE) or "Heavy Bonerang",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_DESC) or
-                "Bonerang deals 50% more damage.",
+                "Bonerang deals 33% more damage.",
             icon = "wathgrithr_arsenal_spear_1",
             pos = {-170, Y_TOP - 50},
             group = "bonerang",
@@ -56,10 +56,7 @@ local function BuildSkillsData(SkillTreeFns)
             group = "consumption",
             tags = {"consumption", "recycling"},
             root = true,
-            connects = {
-                "wilton_food_recycling_2",
-                "wilton_food_recycling_3"
-            }
+            connects = {"wilton_food_recycling_2", "wilton_food_recycling_3"}
         },
         wilton_food_recycling_2 = {
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_2_TITLE) or
@@ -84,7 +81,7 @@ local function BuildSkillsData(SkillTreeFns)
         wilton_food_recycling_3 = {
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_3_TITLE) or "Lavish Teeth",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_3_DESC) or
-                "Recycling food has a chance to valuable resources alongside wet goop.",
+                "Recycling food has a chance to drop valuable resources alongside wet goop.",
             icon = "woodie_curse_beaver_1",
             pos = {-35, Y_TOP - 50},
             group = "consumption",

@@ -815,7 +815,7 @@ STRINGS.SKILLTREE.WILTON = {
     BONERANG_DURABILITY_TITLE = "Durable Bonerang",
     BONERANG_DURABILITY_DESC = "Bonerang lasts 50% longer.",
     BONERANG_DAMAGE_TITLE = "Heavy Bonerang",
-    BONERANG_DAMAGE_DESC = "Bonerang deals 50% more damage.",
+    BONERANG_DAMAGE_DESC = "Bonerang deals 33% more damage.",
     BONERANG_SAFECATCH_TITLE = "Cushioned Catch",
     BONERANG_SAFECATCH_DESC = "Bonerang won't deal damage on an unsuccessful catch.",
 
@@ -860,6 +860,107 @@ CreateSkillTree()
 if GLOBAL.TheSkillTree and GLOBAL.TheSkillTree.GetSkillXP and GLOBAL.TheSkillTree:GetSkillXP("wiltonmod") == 0 then
     GLOBAL.TheSkillTree:AddSkillXP(15, "wiltonmod")
 end
+
+local Image = require("widgets/image")
+local Widget = require("widgets/widget")
+
+local LINE_COLOR = { 127 / 255, 108 / 255, 75 / 255, 1 }
+local LINE_THICKNESS = 4
+
+local function AddLine(parent, drawn_segments, x1, y1, x2, y2)
+    local xmin, xmax = math.min(x1, x2), math.max(x1, x2)
+    local ymin, ymax = math.min(y1, y2), math.max(y1, y2)
+    local key = string.format("%.1f_%.1f_%.1f_%.1f", xmin, ymin, xmax, ymax)
+    if drawn_segments[key] then
+        return
+    end
+    drawn_segments[key] = true
+
+    local line = parent:AddChild(Image("images/ui.xml", "white.tex"))
+    line:SetTint(LINE_COLOR[1], LINE_COLOR[2], LINE_COLOR[3], LINE_COLOR[4])
+    line:SetClickable(false)
+    if x1 == x2 then
+        line:ScaleToSize(LINE_THICKNESS, ymax - ymin)
+        line:SetPosition(x1, (ymin + ymax) * 0.5)
+    else
+        line:ScaleToSize(xmax - xmin + LINE_THICKNESS, LINE_THICKNESS)
+        line:SetPosition((xmin + xmax) * 0.5, y1)
+    end
+    return line
+end
+
+local function ConnectSkillGroup(parent, drawn_segments, p1, children_points)
+    if #children_points == 0 then
+        return
+    end
+
+    local all_same_x = true
+    for _, p2 in ipairs(children_points) do
+        if p2.x ~= p1.x then
+            all_same_x = false
+            break
+        end
+    end
+
+    if all_same_x then
+        for _, p2 in ipairs(children_points) do
+            AddLine(parent, drawn_segments, p1.x, p1.y, p2.x, p2.y)
+        end
+    else
+        local min_x = p1.x
+        local max_x = p1.x
+        for _, p2 in ipairs(children_points) do
+            if p2.x < min_x then min_x = p2.x end
+            if p2.x > max_x then max_x = p2.x end
+        end
+
+        local mid_y = (p1.y + children_points[1].y) * 0.5
+
+        -- Stem down from parent into crossbar
+        AddLine(parent, drawn_segments, p1.x, p1.y, p1.x, mid_y - LINE_THICKNESS * 0.5)
+
+        -- Single continuous horizontal crossbar across all children
+        AddLine(parent, drawn_segments, min_x, mid_y, max_x, mid_y)
+
+        -- Drops down from crossbar into each child
+        for _, p2 in ipairs(children_points) do
+            AddLine(parent, drawn_segments, p2.x, mid_y + LINE_THICKNESS * 0.5, p2.x, p2.y)
+        end
+    end
+end
+
+AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
+    local old_CreateTree = self.CreateTree
+    self.CreateTree = function(self, prefabname, targetdata, readonly)
+        old_CreateTree(self, prefabname, targetdata, readonly)
+
+        if prefabname == "wiltonmod" and self.skilltreedef and self.skillgraphics then
+            if self.wilton_lines_root then
+                self.wilton_lines_root:Kill()
+                self.wilton_lines_root = nil
+            end
+
+            local lines_root = self:AddChild(Widget("wilton_skill_lines"))
+            lines_root:MoveToBack()
+            self.wilton_lines_root = lines_root
+
+            local drawn_segments = {}
+            for skill_name, skill_data in pairs(self.skilltreedef) do
+                if skill_data.connects and self.skillgraphics[skill_name] and self.skillgraphics[skill_name].button then
+                    local p1 = self.skillgraphics[skill_name].button:GetPosition()
+                    local children_points = {}
+                    for _, target_name in ipairs(skill_data.connects) do
+                        local target_graphics = self.skillgraphics[target_name]
+                        if target_graphics and target_graphics.button then
+                            table.insert(children_points, target_graphics.button:GetPosition())
+                        end
+                    end
+                    ConnectSkillGroup(lines_root, drawn_segments, p1, children_points)
+                end
+            end
+        end
+    end
+end)
 -- Skilltree end
 
 -- adds minimap icons
