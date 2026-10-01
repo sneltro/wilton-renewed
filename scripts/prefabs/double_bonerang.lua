@@ -76,6 +76,20 @@ local function OnMiss(inst, owner, target)
     end
 end
 
+local function setAutoCatch(inst)
+    local oldhit = inst.components.projectile.Hit
+    function inst.components.projectile:Hit(target)
+        if target == self.owner and target.components.catcher then
+            target:PushEvent("catch", {projectile = self.inst})
+            self.inst:PushEvent("caught", {catcher = target})
+            self:Catch(target)
+            target.components.catcher:StopWatching(self.inst)
+        else
+            oldhit(self, target)
+        end
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -101,13 +115,13 @@ local function fn()
 
 	
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(34)
+    inst.components.weapon:SetDamage(51)
     inst.components.weapon:SetRange(TUNING.BOOMERANG_DISTANCE, TUNING.BOOMERANG_DISTANCE+2)
     -------
 
     inst:AddComponent("finiteuses")
-    inst.components.finiteuses:SetMaxUses(TUNING.BOOMERANG_USES*2)
-    inst.components.finiteuses:SetUses(TUNING.BOOMERANG_USES*2)
+    inst.components.finiteuses:SetMaxUses(100)
+    inst.components.finiteuses:SetUses(100)
 
     inst.components.finiteuses:SetOnFinished(OnFinished)
 
@@ -120,6 +134,7 @@ local function fn()
     inst.components.projectile:SetOnHitFn(OnHit)
     inst.components.projectile:SetOnMissFn(OnMiss)
     inst.components.projectile:SetOnCaughtFn(OnCaught)
+    setAutoCatch(inst)
 
     inst:AddComponent("inventoryitem")
 	inst.components.inventoryitem.atlasname = "images/inventoryimages/completelyregularattack.xml"

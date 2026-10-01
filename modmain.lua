@@ -237,13 +237,17 @@ GLOBAL.Ingredient("boneshard", 3), GLOBAL.Ingredient("charcoal", 1)}, GLOBAL.TEC
 
 AddCharacterRecipe("double_bonerang", -- name
 { -- ingredients
-GLOBAL.Ingredient("boneshard", 3), GLOBAL.Ingredient("charcoal", 1)}, GLOBAL.TECH.SCIENCE_TWO, -- tech
+    GLOBAL.Ingredient("boneshard", 6), GLOBAL.Ingredient("charcoal", 2), GLOBAL.Ingredient("rope", 2),
+    GLOBAL.Ingredient("orangegem", 1)}, GLOBAL.TECH.ANCIENT_FOUR, -- tech
 { -- config
     product = "double_bonerang",
-    builder_tag = "wiltonmod",
+    builder_tag = "wilton_double_bonerang",
     atlas = "images/inventoryimages/completelyregularattack.xml",
     image = "completelyregularattack.tex",
-    numtogive = 1
+    numtogive = 1,
+    nounlock = true,
+    force_hint = true,
+    station_tag = "ancient_station"
 }, { -- filters
 "WEAPONS"})
 
@@ -818,6 +822,8 @@ STRINGS.SKILLTREE.WILTON = {
     BONERANG_DAMAGE_DESC = "Bonerang deals 33% more damage.",
     BONERANG_SAFECATCH_TITLE = "Cushioned Catch",
     BONERANG_SAFECATCH_DESC = "Bonerang won't deal damage on an unsuccessful catch.",
+    BONERANG_DOUBLE_TITLE = "Double Bonerang",
+    BONERANG_DOUBLE_DESC = "Learn to craft the Double Bonerang. Deals 51 damage, auto-catches, and has 100 uses.",
 
     FOOD_RECYCLING_1_TITLE = "Mental Stability I",
     FOOD_RECYCLING_1_DESC = "Food gives +3 sanity when recycled.",
@@ -864,7 +870,7 @@ end
 local Image = require("widgets/image")
 local Widget = require("widgets/widget")
 
-local LINE_COLOR = { 127 / 255, 108 / 255, 75 / 255, 1 }
+local LINE_COLOR = {127 / 255, 108 / 255, 75 / 255, 1}
 local LINE_THICKNESS = 4
 
 local function AddLine(parent, drawn_segments, x1, y1, x2, y2)
@@ -910,8 +916,12 @@ local function ConnectSkillGroup(parent, drawn_segments, p1, children_points)
         local min_x = p1.x
         local max_x = p1.x
         for _, p2 in ipairs(children_points) do
-            if p2.x < min_x then min_x = p2.x end
-            if p2.x > max_x then max_x = p2.x end
+            if p2.x < min_x then
+                min_x = p2.x
+            end
+            if p2.x > max_x then
+                max_x = p2.x
+            end
         end
 
         local mid_y = (p1.y + children_points[1].y) * 0.5

@@ -204,6 +204,12 @@ local function UpdateSkillModifiers(inst)
 	else
 		inst:RemoveTag("fasthealer")
 	end
+
+	if inst.components.skilltreeupdater:IsActivated("wilton_bonerang_double") then
+		inst:AddTag("wilton_double_bonerang")
+	else
+		inst:RemoveTag("wilton_double_bonerang")
+	end
 end
 
 -- When loading or spawning the character

@@ -40,7 +40,30 @@ local function BuildSkillsData(SkillTreeFns)
             icon = "wathgrithr_arsenal_shield_1",
             pos = {-170, Y_TOP - 100},
             group = "bonerang",
-            tags = {"bonerang"}
+            tags = {"bonerang"},
+            connects = {"wilton_bonerang_double"}
+        },
+        wilton_bonerang_double = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DOUBLE_TITLE) or
+                "Double Bonerang",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DOUBLE_DESC) or
+                "Learn to craft the Double Bonerang. Deals 51 damage, auto-catches, and has 100 uses.",
+            icon = "wolfgang_dumbbell_throwing_2",
+            pos = {-170, Y_TOP - 150},
+            group = "bonerang",
+            tags = {"bonerang"},
+            onactivate = function(inst, fromload)
+                inst:AddTag("wilton_double_bonerang")
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end,
+            ondeactivate = function(inst, fromload)
+                inst:RemoveTag("wilton_double_bonerang")
+                if inst.UpdateSkillModifiers then
+                    inst:UpdateSkillModifiers()
+                end
+            end
         },
 
         -----------------------------------------------------------------------
