@@ -11,6 +11,13 @@ PrefabFiles = {
 	"rockygoop",
 }
 
+if GLOBAL.ManifestManager and GLOBAL.ManifestManager.AddFileToModManifest then
+	for _, prefab in ipairs(PrefabFiles) do
+		GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/prefabs/" .. prefab .. ".lua")
+	end
+	GLOBAL.ManifestManager:AddFileToModManifest(modname, "scripts/prefabs/skilltree_wilton.lua")
+end
+
 Assets = {
     Asset( "IMAGE", "images/saveslot_portraits/wiltonmod.tex" ),
     Asset( "ATLAS", "images/saveslot_portraits/wiltonmod.xml" ),
