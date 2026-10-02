@@ -25,20 +25,31 @@ local function BuildSkillsData(SkillTreeFns)
         wilton_bonerang_damage = {
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_TITLE) or "Heavy Bonerang",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DAMAGE_DESC) or
-                "Bonerang deals 33% more damage.",
+                "Bonerang deals 50% more damage.",
             icon = "wathgrithr_arsenal_spear_1",
             pos = {-170, Y_TOP - 50},
             group = "bonerang",
             tags = {"bonerang"},
-            connects = {"wilton_bonerang_safecatch"}
+            connects = {"wilton_bonerang_safecatch", "wilton_bonerang_riskycatch"}
         },
         wilton_bonerang_safecatch = {
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_SAFECATCH_TITLE) or
-                "Cushioned Catch",
+                "Cushioned Fall",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_SAFECATCH_DESC) or
                 "Bonerang won't deal damage on an unsuccessful catch.",
             icon = "wathgrithr_arsenal_shield_1",
-            pos = {-170, Y_TOP - 100},
+            pos = {-195, Y_TOP - 100},
+            group = "bonerang",
+            tags = {"bonerang"},
+            connects = {"wilton_bonerang_double"}
+        },
+        wilton_bonerang_riskycatch = {
+            title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_RISKYCATCH_TITLE) or
+                "Risky Catch",
+            desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_RISKYCATCH_DESC) or
+                "Unsuccessful catches are caught automatically without durability loss, but still damage you.",
+            icon = "wolfgang_dumbbell_throwing_1",
+            pos = {-145, Y_TOP - 100},
             group = "bonerang",
             tags = {"bonerang"},
             connects = {"wilton_bonerang_double"}
@@ -47,7 +58,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DOUBLE_TITLE) or
                 "Double Bonerang",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DOUBLE_DESC) or
-                "Learn to craft the Double Bonerang. Deals 51 damage, auto-catches, and has 100 uses.",
+                "Learn to craft the Double Bonerang. Deals 59.5 damage, auto-catches, and has 100 uses.",
             icon = "wolfgang_dumbbell_throwing_2",
             pos = {-170, Y_TOP - 150},
             group = "bonerang",

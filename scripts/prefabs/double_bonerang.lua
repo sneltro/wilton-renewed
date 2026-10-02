@@ -115,7 +115,7 @@ local function fn()
 
 	
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(51)
+    inst.components.weapon:SetDamage(59.5)
     inst.components.weapon:SetRange(TUNING.BOOMERANG_DISTANCE, TUNING.BOOMERANG_DISTANCE+2)
     -------
 

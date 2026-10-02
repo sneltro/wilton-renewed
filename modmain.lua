@@ -825,11 +825,13 @@ STRINGS.SKILLTREE.WILTON = {
     BONERANG_DURABILITY_TITLE = "Durable Bonerang",
     BONERANG_DURABILITY_DESC = "Bonerang lasts 50% longer.",
     BONERANG_DAMAGE_TITLE = "Heavy Bonerang",
-    BONERANG_DAMAGE_DESC = "Bonerang deals 33% more damage.",
-    BONERANG_SAFECATCH_TITLE = "Cushioned Catch",
+    BONERANG_DAMAGE_DESC = "Bonerang deals 50% more damage.",
+    BONERANG_SAFECATCH_TITLE = "Cushioned Fall",
     BONERANG_SAFECATCH_DESC = "Bonerang won't deal damage on an unsuccessful catch.",
+    BONERANG_RISKYCATCH_TITLE = "Risky Catch",
+    BONERANG_RISKYCATCH_DESC = "Unsuccessful catches are caught automatically without durability loss, but still damage you.",
     BONERANG_DOUBLE_TITLE = "Double Bonerang",
-    BONERANG_DOUBLE_DESC = "Learn to craft the Double Bonerang. Deals 51 damage, auto-catches, and has 100 uses.",
+    BONERANG_DOUBLE_DESC = "Learn to craft the Double Bonerang. Deals 59.5 damage, auto-catches, and has 100 uses.",
 
     FOOD_RECYCLING_1_TITLE = "Mental Stability I",
     FOOD_RECYCLING_1_DESC = "Food gives +3 sanity when recycled.",
@@ -856,6 +858,17 @@ STRINGS.SKILLTREE.WILTON = {
 
 local SkillTreeDefs = require("prefabs/skilltree_defs")
 local BuildSkillsData = require("prefabs/skilltree_wilton")
+local SkillTreeData = require("skilltreedata")
+
+local old_ValidateCharacterData = SkillTreeData.ValidateCharacterData
+function SkillTreeData:ValidateCharacterData(characterprefab, activatedskills, skillxp)
+    if characterprefab == "wiltonmod" and activatedskills then
+        if activatedskills["wilton_bonerang_safecatch"] and activatedskills["wilton_bonerang_riskycatch"] then
+            return false, "Cannot have both Cushioned Fall and Risky Catch."
+        end
+    end
+    return old_ValidateCharacterData(self, characterprefab, activatedskills, skillxp)
+end
 
 local function CreateSkillTree()
     if BuildSkillsData then
@@ -972,6 +985,39 @@ AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
                         end
                     end
                     ConnectSkillGroup(lines_root, drawn_segments, p1, children_points)
+                end
+            end
+        end
+    end
+
+    local old_RefreshTree = self.RefreshTree
+    self.RefreshTree = function(self, skillschanged)
+        old_RefreshTree(self, skillschanged)
+
+        if self.target == "wiltonmod" and self.skillgraphics then
+            local updater = self.fromfrontend and GLOBAL.TheSkillTree or (GLOBAL.ThePlayer and GLOBAL.ThePlayer.components.skilltreeupdater)
+            if updater then
+                local has_safe = updater:IsActivated("wilton_bonerang_safecatch", "wiltonmod")
+                local has_risky = updater:IsActivated("wilton_bonerang_riskycatch", "wiltonmod")
+
+                if has_safe and self.skillgraphics["wilton_bonerang_riskycatch"] then
+                    local g = self.skillgraphics["wilton_bonerang_riskycatch"]
+                    if not (updater.IsActivated and updater:IsActivated("wilton_bonerang_riskycatch", "wiltonmod")) then
+                        g.status.activatable = false
+                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex", "unselected.tex", "unselected.tex", "unselected.tex")
+                        if self.selectedskill == "wilton_bonerang_riskycatch" and self.infopanel and self.infopanel.activatebutton then
+                            self.infopanel.activatebutton:Hide()
+                        end
+                    end
+                elseif has_risky and self.skillgraphics["wilton_bonerang_safecatch"] then
+                    local g = self.skillgraphics["wilton_bonerang_safecatch"]
+                    if not (updater.IsActivated and updater:IsActivated("wilton_bonerang_safecatch", "wiltonmod")) then
+                        g.status.activatable = false
+                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex", "unselected.tex", "unselected.tex", "unselected.tex")
+                        if self.selectedskill == "wilton_bonerang_safecatch" and self.infopanel and self.infopanel.activatebutton then
+                            self.infopanel.activatebutton:Hide()
+                        end
+                    end
                 end
             end
         end

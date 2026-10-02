@@ -24,7 +24,7 @@ local function OnEquip(inst, owner)
     end
 
     if owner.components.skilltreeupdater and owner.components.skilltreeupdater:IsActivated("wilton_bonerang_damage") then
-        inst.components.weapon:SetDamage(45)
+        inst.components.weapon:SetDamage(51)
     else
         inst.components.weapon:SetDamage(34)
     end
@@ -155,22 +155,55 @@ local function fn()
     local old_hit = inst.components.projectile.Hit
     inst.components.projectile.Hit = function(self, target)
         local attacker = self.owner
-        if target == attacker and target ~= nil and target:HasTag("wiltonmod") and target.components.skilltreeupdater and target.components.skilltreeupdater:IsActivated("wilton_bonerang_safecatch") then
-            self:Stop()
-            self.inst.Physics:Stop()
+        if target == attacker and target ~= nil and target:HasTag("wiltonmod") and target.components.skilltreeupdater then
+            if target.components.skilltreeupdater:IsActivated("wilton_bonerang_safecatch") then
+                self:Stop()
+                self.inst.Physics:Stop()
 
-            if self.inst.components.finiteuses ~= nil then
-                local uses = 1
-                if self.inst.components.weapon ~= nil then
-                    uses = (self.inst.components.weapon.attackwear or 1) * self.inst.components.weapon.attackwearmultipliers:Get()
+                if self.inst.components.finiteuses ~= nil then
+                    local uses = 1
+                    if self.inst.components.weapon ~= nil then
+                        uses = (self.inst.components.weapon.attackwear or 1) * self.inst.components.weapon.attackwearmultipliers:Get()
+                    end
+                    self.inst.components.finiteuses:Use(uses)
                 end
-                self.inst.components.finiteuses:Use(uses)
-            end
 
-            if self.onhit ~= nil then
-                self.onhit(self.inst, attacker, target)
+                if self.onhit ~= nil then
+                    self.onhit(self.inst, attacker, target)
+                end
+                return
+            elseif target.components.skilltreeupdater:IsActivated("wilton_bonerang_riskycatch") then
+                self:Stop()
+                self.inst.Physics:Stop()
+
+                if target.components.combat ~= nil then
+                    local dmg = 0
+                    local spdmg = nil
+                    if attacker ~= nil and attacker.components.combat ~= nil then
+                        dmg, spdmg = attacker.components.combat:CalcDamage(target, self.inst)
+                    elseif self.inst.components.weapon ~= nil then
+                        dmg = self.inst.components.weapon:GetDamage(target)
+                    end
+                    target.components.combat:GetAttacked(attacker, dmg, self.inst, self.stimuli, spdmg)
+                end
+
+                if target.components.catcher ~= nil then
+                    target.components.catcher:StopWatching(self.inst)
+                end
+
+                if target.components.health ~= nil and target.components.health:IsDead() then
+                    if self.onhit ~= nil then
+                        self.onhit(self.inst, attacker, target)
+                    end
+                else
+                    target:PushEvent("catch", {projectile = self.inst})
+                    self.inst:PushEvent("caught", {catcher = target})
+                    if self.oncaught ~= nil then
+                        self.oncaught(self.inst, target)
+                    end
+                end
+                return
             end
-            return
         end
         return old_hit(self, target)
     end
