@@ -59,7 +59,7 @@ local function BuildSkillsData(SkillTreeFns)
                 "Double Bonerang",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONERANG_DOUBLE_DESC) or
                 "Learn to craft the Double Bonerang. Deals 59.5 damage, auto-catches, and has 100 uses.",
-            icon = "wolfgang_dumbbell_throwing_2",
+            icon = "doublebonerang",
             pos = {-182, Y_TOP - 150},
             group = "bonerang",
             tags = {"bonerang"},
@@ -116,7 +116,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_3_TITLE) or "Lavish Teeth",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_3_DESC) or
                 "Recycling food has a chance to drop valuable resources alongside wet goop.",
-            icon = "woodie_curse_beaver_1",
+            icon = "lavishteeth",
             pos = {-75, Y_TOP - 50},
             group = "consumption",
             tags = {"consumption", "recycling"}
@@ -129,7 +129,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_1_TITLE) or "Dense Goop",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_1_DESC) or
                 "Rocky goop gives more health when used (5 -> 7).",
-            icon = "wilson_alchemy_iky_1",
+            icon = "densegoop",
             pos = {-28, Y_TOP},
             group = "consumption",
             tags = {"consumption", "rockygoop"},
@@ -140,7 +140,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_2_TITLE) or "Mineral Restoration",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.ROCKY_GOOP_2_DESC) or
                 "Rocky goop also gives max health when used (0 -> 3).",
-            icon = "wilson_alchemy_iky_2",
+            icon = "mineralrestoration",
             pos = {-28, Y_TOP - 50},
             group = "consumption",
             tags = {"consumption", "rockygoop"}
@@ -153,7 +153,7 @@ local function BuildSkillsData(SkillTreeFns)
             title = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_1_TITLE) or "Thick Bone Paste",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.BONEPASTE_1_DESC) or
                 "Bonepaste gives 25% more health and max health.",
-            icon = "wilson_alchemy_iky_3",
+            icon = "thickbonepaste",
             pos = {18, Y_TOP},
             group = "consumption",
             tags = {"consumption", "bonepaste"},

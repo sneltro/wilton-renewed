@@ -61,7 +61,24 @@ Assets = {Asset("IMAGE", "images/saveslot_portraits/wiltonmod.tex"),
           Asset("IMAGE", "images/inventoryimages/rockygoop.tex"),
 
           Asset("ATLAS", "images/skilltree_icons/mentalstab1.xml"),
-          Asset("IMAGE", "images/skilltree_icons/mentalstab1.tex"), Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
+          Asset("IMAGE", "images/skilltree_icons/mentalstab1.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/densegoop.xml"),
+          Asset("IMAGE", "images/skilltree_icons/densegoop.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/doublebonerang.xml"),
+          Asset("IMAGE", "images/skilltree_icons/doublebonerang.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/lavishteeth.xml"),
+          Asset("IMAGE", "images/skilltree_icons/lavishteeth.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/mineralrestoration.xml"),
+          Asset("IMAGE", "images/skilltree_icons/mineralrestoration.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/thickbonepaste.xml"),
+          Asset("IMAGE", "images/skilltree_icons/thickbonepaste.tex"),
+
+          Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
           Asset("SOUND", "sound/wiltonmod.fsb")}
 
 local require = GLOBAL.require
@@ -879,6 +896,11 @@ end
 local RegisterSkilltreeIconsAtlas = GLOBAL.RegisterSkilltreeIconsAtlas or RegisterSkilltreeIconsAtlas
 if RegisterSkilltreeIconsAtlas then
     RegisterSkilltreeIconsAtlas("images/skilltree_icons/mentalstab1.xml", "mentalstab1.tex")
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/densegoop.xml", "densegoop.tex")
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/doublebonerang.xml", "doublebonerang.tex")
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/lavishteeth.xml", "lavishteeth.tex")
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/mineralrestoration.xml", "mineralrestoration.tex")
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/thickbonepaste.xml", "thickbonepaste.tex")
 end
 
 local function CreateSkillTree()
