@@ -58,7 +58,12 @@ Assets = {Asset("IMAGE", "images/saveslot_portraits/wiltonmod.tex"),
           Asset("IMAGE", "images/inventoryimages/double_bonerang.tex"),
 
           Asset("ATLAS", "images/inventoryimages/rockygoop.xml"),
-          Asset("IMAGE", "images/inventoryimages/rockygoop.tex"), Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
+          Asset("IMAGE", "images/inventoryimages/rockygoop.tex"),
+
+          Asset("ATLAS", "images/skilltree_icons/mentalstab1.xml"),
+          Asset("IMAGE", "images/skilltree_icons/mentalstab1.tex"),
+
+          Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
           Asset("SOUND", "sound/wiltonmod.fsb")}
 
 local require = GLOBAL.require
@@ -868,6 +873,11 @@ function SkillTreeData:ValidateCharacterData(characterprefab, activatedskills, s
         end
     end
     return old_ValidateCharacterData(self, characterprefab, activatedskills, skillxp)
+end
+
+local RegisterSkilltreeIconsAtlas = GLOBAL.RegisterSkilltreeIconsAtlas or RegisterSkilltreeIconsAtlas
+if RegisterSkilltreeIconsAtlas then
+    RegisterSkilltreeIconsAtlas("images/skilltree_icons/mentalstab1.xml", "mentalstab1.tex")
 end
 
 local function CreateSkillTree()

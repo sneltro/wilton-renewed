@@ -85,7 +85,7 @@ local function BuildSkillsData(SkillTreeFns)
                 "Mental Stability I",
             desc = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.FOOD_RECYCLING_1_DESC) or
                 "Food gives +3 sanity when recycled.",
-            icon = "wormwood_moon_cap_eating",
+            icon = "mentalstab1",
             pos = {-60, Y_TOP},
             group = "consumption",
             tags = {"consumption", "recycling"},
