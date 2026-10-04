@@ -61,9 +61,7 @@ Assets = {Asset("IMAGE", "images/saveslot_portraits/wiltonmod.tex"),
           Asset("IMAGE", "images/inventoryimages/rockygoop.tex"),
 
           Asset("ATLAS", "images/skilltree_icons/mentalstab1.xml"),
-          Asset("IMAGE", "images/skilltree_icons/mentalstab1.tex"),
-
-          Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
+          Asset("IMAGE", "images/skilltree_icons/mentalstab1.tex"), Asset("SOUNDPACKAGE", "sound/wiltonmod.fev"),
           Asset("SOUND", "sound/wiltonmod.fsb")}
 
 local require = GLOBAL.require
@@ -102,8 +100,7 @@ RegisterInventoryItemAtlas("images/inventoryimages/bonepaste.xml", "images/inven
 RegisterInventoryItemAtlas("images/inventoryimages/completelyregularattack.xml",
     "images/inventoryimages/completelyregularattack.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/double_bonerang.xml", "double_bonerang.tex")
-RegisterInventoryItemAtlas("images/inventoryimages/double_bonerang.xml",
-    "images/inventoryimages/double_bonerang.tex")
+RegisterInventoryItemAtlas("images/inventoryimages/double_bonerang.xml", "images/inventoryimages/double_bonerang.tex")
 RegisterInventoryItemAtlas("images/inventoryimages/rockygoop.xml", "images/inventoryimages/rockygoop.tex")
 
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE.bonepaste = {
@@ -248,8 +245,8 @@ GLOBAL.Ingredient("boneshard", 3), GLOBAL.Ingredient("charcoal", 1)}, GLOBAL.TEC
 
 AddCharacterRecipe("double_bonerang", -- name
 { -- ingredients
-    GLOBAL.Ingredient("boneshard", 6), GLOBAL.Ingredient("charcoal", 2), GLOBAL.Ingredient("rope", 2),
-    GLOBAL.Ingredient("orangegem", 1)}, GLOBAL.TECH.ANCIENT_FOUR, -- tech
+GLOBAL.Ingredient("boneshard", 6), GLOBAL.Ingredient("charcoal", 2), GLOBAL.Ingredient("rope", 2),
+GLOBAL.Ingredient("orangegem", 1)}, GLOBAL.TECH.ANCIENT_FOUR, -- tech
 { -- config
     product = "double_bonerang",
     builder_tag = "wilton_double_bonerang",
@@ -267,7 +264,7 @@ STRINGS.RECIPE_DESC.COMPLETELYREGULARATTACK = "It's an absolutely normal boomera
 STRINGS.NAMES.COMPLETELYREGULARATTACK = "Bonerang"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.COMPLETELYREGULARATTACK = "Tiny bones stronger!"
 
-STRINGS.RECIPE_DESC.DOUBLE_BONERANG = "It's an absolutely normal boomerang."
+STRINGS.RECIPE_DESC.DOUBLE_BONERANG = "It's twice an absolutely normal boomerang."
 STRINGS.NAMES.DOUBLE_BONERANG = "Double Bonerang"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.DOUBLE_BONERANG = "Tiny bones stronger!"
 
@@ -825,8 +822,12 @@ STRINGS.SKILLTREE.PANELS = STRINGS.SKILLTREE.PANELS or {}
 STRINGS.SKILLTREE.PANELS.BONERANG = "BONERANG"
 STRINGS.SKILLTREE.PANELS.CONSUMPTION = "CONSUMPTION"
 STRINGS.SKILLTREE.PANELS.RESURRECTION = "RESURRECTION"
+STRINGS.SKILLTREE.PANELS.AFFINITY = STRINGS.SKILLTREE.PANELS.AFFINITY or STRINGS.SKILLTREE.PANELS.ALLEGIANCE or
+                                        "AFFINITY"
+STRINGS.SKILLTREE.PANELS.ALLEGIANCE = STRINGS.SKILLTREE.PANELS.ALLEGIANCE or "AFFINITY"
 
 STRINGS.SKILLTREE.WILTON = {
+    AFFINITY_COMING_SOON = "COMING SOON",
     BONERANG_DURABILITY_TITLE = "Durable Bonerang",
     BONERANG_DURABILITY_DESC = "Bonerang lasts 50% longer.",
     BONERANG_DAMAGE_TITLE = "Heavy Bonerang",
@@ -843,7 +844,7 @@ STRINGS.SKILLTREE.WILTON = {
     FOOD_RECYCLING_2_TITLE = "Mental Stability II",
     FOOD_RECYCLING_2_DESC = "Food gives +5 sanity when recycled. Max sanity is increased to 100. Night doesn't scare you anymore at all.",
     FOOD_RECYCLING_3_TITLE = "Lavish Teeth",
-    FOOD_RECYCLING_3_DESC = "Recycling food has a chance to valuable resources alongside wet goop.",
+    FOOD_RECYCLING_3_DESC = "Recycling food has a chance to drop valuable resources alongside wet goop.",
 
     ROCKY_GOOP_1_TITLE = "Dense Goop",
     ROCKY_GOOP_1_DESC = "Rocky goop gives more health when used (5 -> 7).",
@@ -898,6 +899,9 @@ end
 
 local Image = require("widgets/image")
 local Widget = require("widgets/widget")
+local Text = require("widgets/text")
+local HEADERFONT = GLOBAL.HEADERFONT or HEADERFONT
+local UICOLOURS = GLOBAL.UICOLOURS or UICOLOURS
 
 local LINE_COLOR = {127 / 255, 108 / 255, 75 / 255, 1}
 local LINE_THICKNESS = 4
@@ -997,6 +1001,42 @@ AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
                     ConnectSkillGroup(lines_root, drawn_segments, p1, children_points)
                 end
             end
+
+            if self.wilton_affinity_root then
+                self.wilton_affinity_root:Kill()
+                self.wilton_affinity_root = nil
+            end
+
+            local affinity_pos = nil
+            if SkillTreeDefs.SKILLTREE_ORDERS and SkillTreeDefs.SKILLTREE_ORDERS["wiltonmod"] then
+                for _, order in ipairs(SkillTreeDefs.SKILLTREE_ORDERS["wiltonmod"]) do
+                    if order[1] == "allegiance" or order[1] == "affinity" then
+                        affinity_pos = order[2]
+                        break
+                    end
+                end
+            end
+            if not affinity_pos then
+                affinity_pos = {206, 160 + 30}
+            end
+
+            local affinity_x = affinity_pos[1]
+            local title_y = affinity_pos[2] - 30
+
+            local affinity_root = self:AddChild(Widget("wilton_affinity_root"))
+            self.wilton_affinity_root = affinity_root
+
+            local title_text = (STRINGS.SKILLTREE.PANELS and
+                                   (STRINGS.SKILLTREE.PANELS.AFFINITY or STRINGS.SKILLTREE.PANELS.ALLEGIANCE)) or
+                                   "AFFINITY"
+            local title = affinity_root:AddChild(Text(HEADERFONT, 18, title_text, UICOLOURS.GOLD))
+            title:SetPosition(affinity_x, title_y)
+
+            local coming_soon_str = (STRINGS.SKILLTREE.WILTON and STRINGS.SKILLTREE.WILTON.AFFINITY_COMING_SOON) or
+                                        "COMING SOON"
+            local text_color = (UICOLOURS and UICOLOURS.GOLD_UNIMPORTANT) or {213 / 255, 213 / 255, 203 / 255, 1}
+            local coming_soon = affinity_root:AddChild(Text(HEADERFONT, 14, coming_soon_str, text_color))
+            coming_soon:SetPosition(affinity_x, title_y - 55)
         end
     end
 
@@ -1005,7 +1045,8 @@ AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
         old_RefreshTree(self, skillschanged)
 
         if self.target == "wiltonmod" and self.skillgraphics then
-            local updater = self.fromfrontend and GLOBAL.TheSkillTree or (GLOBAL.ThePlayer and GLOBAL.ThePlayer.components.skilltreeupdater)
+            local updater = self.fromfrontend and GLOBAL.TheSkillTree or
+                                (GLOBAL.ThePlayer and GLOBAL.ThePlayer.components.skilltreeupdater)
             if updater then
                 local has_safe = updater:IsActivated("wilton_bonerang_safecatch", "wiltonmod")
                 local has_risky = updater:IsActivated("wilton_bonerang_riskycatch", "wiltonmod")
@@ -1014,8 +1055,10 @@ AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
                     local g = self.skillgraphics["wilton_bonerang_riskycatch"]
                     if not (updater.IsActivated and updater:IsActivated("wilton_bonerang_riskycatch", "wiltonmod")) then
                         g.status.activatable = false
-                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex", "unselected.tex", "unselected.tex", "unselected.tex")
-                        if self.selectedskill == "wilton_bonerang_riskycatch" and self.infopanel and self.infopanel.activatebutton then
+                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex",
+                            "unselected.tex", "unselected.tex", "unselected.tex")
+                        if self.selectedskill == "wilton_bonerang_riskycatch" and self.infopanel and
+                            self.infopanel.activatebutton then
                             self.infopanel.activatebutton:Hide()
                         end
                     end
@@ -1023,8 +1066,10 @@ AddClassPostConstruct("widgets/redux/skilltreebuilder", function(self)
                     local g = self.skillgraphics["wilton_bonerang_safecatch"]
                     if not (updater.IsActivated and updater:IsActivated("wilton_bonerang_safecatch", "wiltonmod")) then
                         g.status.activatable = false
-                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex", "unselected.tex", "unselected.tex", "unselected.tex")
-                        if self.selectedskill == "wilton_bonerang_safecatch" and self.infopanel and self.infopanel.activatebutton then
+                        g.button:SetTextures("images/skilltree.xml", "unselected.tex", "unselected_over.tex",
+                            "unselected.tex", "unselected.tex", "unselected.tex")
+                        if self.selectedskill == "wilton_bonerang_safecatch" and self.infopanel and
+                            self.infopanel.activatebutton then
                             self.infopanel.activatebutton:Hide()
                         end
                     end
